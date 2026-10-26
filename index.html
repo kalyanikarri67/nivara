@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4f5bd5">
+<title>NIVARA - Communication & Caregiver Platform</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root {
+  --bg: #f4f5ff;
+  --card: #ffffff;
+  --ink: #1c2145;
+  --mut: #5d6486;
+  --pri: #4f5bd5;
+  --pri2: #7b4fd5;
+  --grn: #2bb673;
+  --org: #f28a2e;
+  --red: #e5384a;
+  --line: #dfe2f5;
+  --ch: #eceeff;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10122a;
+    --card: #1b1e3d;
+    --ink: #eef0ff;
+    --mut: #a4aad0;
+    --line: #2d315c;
+    --ch: #252950;
+    --pri: #7f89ff;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #10122a;
+  --card: #1b1e3d;
+  --ink: #eef0ff;
+  --mut: #a4aad0;
+  --line: #2d315c;
+  --ch: #252950;
+  --pri: #7f89ff;
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+  font-size: 18px;
+}
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* App Container */
+.scr {
+  display: none;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 14px 16px 96px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.scr.on {
+  display: block;
+}
+
+h1 { font-size: 1.5rem; margin: 6px 0; }
+h2 { font-size: 1.05rem; margin: 18px 0 8px; }
+p { color: var(--mut); margin: 4px 0; line-height: 1.4; }
+
+button, input, select {
+  font: inherit;
+  color: var(--ink);
+}
+
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
+  outline: 3px solid var(--org);
+  outline-offset: 2px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.top b {
+  font-size: 1.15rem;
+}
+
+.back {
+  border: 0;
+  background: none;
+  font-size: 1.6rem;
+  padding: 6px 12px 6px 0;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* UI Elements */
+.btn {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 16px;
+  padding: 15px;
+  font-weight: 700;
+  background: var(--pri);
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+  min-height: 52px;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.2s;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn.red { background: var(--red); }
+.btn.sec { background: var(--ch); color: var(--ink); }
+
+/* Splash Screen Styling */
+#splash {
+  text-align: center;
+  padding-top: 6vh;
+  background: linear-gradient(#f4f5ff, #e6e1ff);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  #splash { background: none; }
+}
+
+.hero-art {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 12px;
+  filter: drop-shadow(0 12px 20px rgba(79, 91, 213, 0.35));
+}
+
+.logo2 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, var(--pri), var(--pri2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Grids and Cards */
+.tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tile {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 16px 12px;
+  text-align: center;
+  font-weight: 700;
+  min-height: 130px;
+  cursor: pointer;
+  background: var(--card);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tile:active {
+  transform: scale(0.97);
+}
+
+.tile i {
+  display: flex;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-style: normal;
+  color: #fff;
+}
+
+.tile small {
+  display: block;
+  font-weight: 400;
+  color: var(--mut);
+  font-size: 0.78rem;
+  margin-top: 4px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  border: 1px solid var(--line);
+  background: var(--ch);
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-weight: 700;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+/* Bottom Nav */
+nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: none;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 100;
+}
+
+nav.on { display: flex; }
+
+nav button {
+  flex: 1;
+  border: 0;
+  background: none;
+  color: var(--mut);
+  padding: 8px;
+  min-height: 60px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+nav button span {
+  display: block;
+  font-size: 1.4rem;
+}
+
+nav button.on {
+  color: var(--pri);
+  font-weight: 700;
+}
+
+/* Modules & Boxes */
+.box {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  margin: 10px 0;
+}
+
+.lab {
+  display: inline-block;
+  background: var(--pri);
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.big {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 6px;
+  min-height: 34px;
+}
+
+video {
+  width: 100%;
+  border-radius: 16px;
+  background: #222;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+.live {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--grn);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.mic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.2rem;
+  background: var(--pri);
+  color: #fff;
+  box-shadow: 0 0 0 14px rgba(79, 91, 213, 0.2);
+}
+
+.mic.go {
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  50% { box-shadow: 0 0 0 28px rgba(79, 91, 213, 0.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mic.go { animation: none; }
+}
+
+/* Chat Screen */
+.msgs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 45vh;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.m {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  line-height: 1.4;
+}
+
+.m.me {
+  align-self: flex-end;
+  background: var(--pri);
+  color: #fff;
+}
+
+.m.o {
+  align-self: flex-start;
+  background: var(--ch);
+  color: var(--ink);
+}
+
+.m small {
+  display: block;
+  opacity: 0.75;
+  font-size: 0.7rem;
+  text-align: right;
+  margin-top: 4px;
+}
+
+.send {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.send input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+
+.send button {
+  width: 52px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--pri);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Text to Sign Output */
+.sgn {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 14px 0;
+}
+
+.sgn div {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 10px 14px;
+  text-align: center;
+  font-size: 2.2rem;
+  min-width: 60px;
+}
+
+.sgn div small {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--mut);
+}
+
+.sgn div.hi {
+  border-color: var(--pri);
+  background: var(--ch);
+}
+
+/* Emergency SOS Header & Controls */
+.sosh {
+  background: var(--red);
+  color: #fff;
+  margin: -14px -16px 16px;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 16px 20px;
+  text-align: center;
+  border-radius: 0 0 24px 24px;
+}
+
+.sosh p { color: #ffe3e6; }
+
+.sosb {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 10px solid rgba(229, 56, 74, 0.25);
+  background: var(--red);
+  color: #fff;
+  font-size: 2.2rem;
+  font-weight: 700;
+  display: block;
+  margin: 16px auto;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(225, 56, 74, 0.4);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  margin: 8px 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--ink);
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.row small {
+  display: block;
+  font-weight: 400;
+  color: var(--mut);
+}
+
+.row em {
+  margin-left: auto;
+  font-style: normal;
+  color: var(--mut);
+}
+
+.set {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.set select, .set input[type="tel"], .set input[type="text"] {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+/* Routine Chart Bars */
+.bars {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 90px;
+  margin-top: 12px;
+}
+
+.bars div {
+  flex: 1;
+  background: var(--pri);
+  border-radius: 4px 4px 0 0;
+}
+
+.bars .low { background: var(--org); }
+.bars .now { background: var(--red); }
+
+.ms { color: var(--red); font-weight: 700; }
+.dn { color: var(--grn); font-weight: 700; }
+.al { border-color: var(--org); background: rgba(242, 138, 46, 0.12); }
+
+.flash {
+  animation: flashAnim 0.4s 4;
+}
+
+@keyframes flashAnim {
+  50% { background: #ffffff; }
+}
+
+/* Live Activity Timeline for Caregivers */
+.feed-item {
+  padding: 10px;
+  border-left: 3px solid var(--pri);
+  background: var(--ch);
+  border-radius: 0 10px 10px 0;
+  margin: 8px 0;
+  font-size: 0.88rem;
+}
+
+.feed-item small {
+  display: block;
+  color: var(--mut);
+  font-size: 0.75rem;
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH / ONBOARDING -->
+<section class="scr on" id="splash">
+  <div class="hero-art">
+    <svg width="100%" height="100%" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="90" fill="url(#hero-grad)" fill-opacity="0.15"/>
+      <path d="M100 30 C60 30, 30 60, 30 100 C30 140, 60 170, 100 170 C140 170, 170 140, 170 100 C170 60, 140 30, 100 30 Z" stroke="url(#hero-grad)" stroke-width="6"/>
+      <!-- Connected Hands Graphic -->
+      <path d="M65 115 C75 95, 95 90, 105 105 C115 120, 135 115, 145 95" stroke="#7b4fd5" stroke-width="8" stroke-linecap="round"/>
+      <path d="M55 95 C65 75, 85 80, 95 95 C105 110, 125 100, 135 80" stroke="#4f5bd5" stroke-width="8" stroke-linecap="round"/>
+      <!-- Heart Shield Center -->
+      <path d="M100 60 C90 50, 75 55, 75 70 C75 85, 100 105, 100 105 C100 105, 125 85, 125 70 C125 55, 110 50, 100 60 Z" fill="#2bb673"/>
+      <defs>
+        <linearGradient id="hero-grad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#4f5bd5"/>
+          <stop offset="1" stop-color="#7b4fd5"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+  <div class="logo2">NIVARA</div>
+  <h1 style="font-weight:400; margin-top:10px;">Empowering Voice.<br>Ensuring Safety.</h1>
+  <div class="chips" style="justify-content:center; margin-top:14px;">
+    <span class="chip">Voice Translation</span>
+    <span class="chip">Sign Bridge</span>
+    <span class="chip">Caregiver Radar</span>
+  </div>
+  <p style="margin:24px 0 40px;">Two-way adaptive communication & live safety hub for deaf, non-speaking, and senior individuals.</p>
+  <button class="btn" onclick="go('home')">Get Started</button>
+</section>
+
+<!-- HOME DASHBOARD -->
+<section class="scr" id="home">
+  <div id="warn"></div>
+  <h1 id="hi">Hello, User!</h1>
+  <p>How would you like to communicate right now?</p>
+
+  <div class="tiles" style="margin-top:14px;">
+    <button class="tile" style="background:#ece8ff" onclick="go('sign')">
+      <i style="background:var(--pri2)">✋</i>Sign → Text &amp; Voice
+      <small>Show signs to camera</small>
+    </button>
+    <button class="tile" style="background:#e3f7ec" onclick="go('voice')">
+      <i style="background:var(--grn)">🎤</i>Voice → Text
+      <small>Listen & convert speech</small>
+    </button>
+    <button class="tile" style="background:#fff0df" onclick="go('t2s')">
+      <i style="background:var(--org)">💬</i>Text → Sign
+      <small>Type text to view signs</small>
+    </button>
+    <button class="tile" style="background:#ffe6e8" onclick="go('sos')">
+      <i style="background:var(--red); font-size:1.1rem">SOS</i>Emergency Hub
+      <small>Instant alerts & SOS</small>
+    </button>
+  </div>
+
+  <h2>Quick Phrases</h2>
+  <div class="chips" id="quick"></div>
+
+  <h2>Modules & Tools</h2>
+  <button class="row" onclick="go('med')">🏥 Medical & Symptom Phrases<em>›</em></button>
+  <button class="row" onclick="go('convo')">💬 Conversation Room<em>›</em></button>
+  <button class="row" onclick="go('care')">🩺 Caregiver Hub & Live Updates<em>›</em></button>
+  <button class="row" onclick="go('demo')">🎬 Real Life Scenario Walkthrough<em>›</em></button>
+</section>
+
+<!-- SIGN TO TEXT & VOICE -->
+<section class="scr" id="sign">
+  <div class="top">
+    <button class="back" onclick="go('home')" aria-label="Back">‹</button>
+    <b>Sign → Text &amp; Voice</b>
+  </div>
+  <div style="position:relative">
+    <video id="cam" autoplay playsinline muted></video>
+    <span class="live" id="live">Camera Off</span>
+  </div>
+  <p id="camNote" style="font-size:0.8rem; margin-top:6px;"></p>
+  <button class="btn sec" style="margin-top:8px;" onclick="cam()">Turn Camera On</button>
+
+  <h2>Detected Sign (Tap for Demo)</h2>
+  <div class="chips" id="signs"></div>
+
+  <span class="lab" style="margin-top:14px;">Detected Text</span>
+  <div class="box big" id="stxt">—</div>
+
+  <span class="lab">Voice Output</span>
+  <div class="box">
+    <button class="btn sec" onclick="speak($('stxt').textContent)">🔊 Speak Text Out Loud</button>
+  </div>
+</section>
+
+<!-- VOICE TO TEXT -->
+<section class="scr" id="voice">
+  <div class="top">
+    <button class="back" onclick="stopRec();go('home')" aria-label="Back">‹</button>
+    <b>Voice → Text Translator</b>
+  </div>
+  <div class="mic" id="mic">🎤</div>
+  <h1 style="text-align:center" id="vst">Tap to Start</h1>
+  <p style="text-align:center">Speak clearly into your microphone</p>
+
+  <div class="box">
+    <small>Transcribed Text</small>
+    <div class="big" id="vtxt" aria-live="polite" style="min-height:60px"></div>
+  </div>
+
+  <button class="btn" id="vbtn" onclick="toggleRec()">Start Listening</button>
+  <p id="vnote" style="font-size:0.85rem; text-align:center; margin-top:8px;"></p>
+  <button class="btn sec" style="margin-top:8px;" onclick="saveV()">Add to Conversation Room</button>
+</section>
+
+<!-- TWO WAY CONVERSATION -->
+<section class="scr" id="convo">
+  <div class="top">
+    <button class="back" onclick="go('home')" aria-label="Back">‹</button>
+    <b>Conversation Room</b>
+  </div>
+  <div class="msgs" id="msgs"></div>
+  <div class="send">
+    <input id="mi" placeholder="Type a message..." aria-label="Message input">
+    <button onclick="sendM()" aria-label="Send message">➤</button>
+  </div>
+</section>
+
+<!-- TEXT TO SIGN -->
+<section class="scr" id="t2s">
+  <div class="top">
+    <button class="back" onclick="go('home')" aria-label="Back">‹</button>
+    <b>Text → Sign Language</b>
+  </div>
+  <div class="send" style="margin:0">
+    <input id="ti" value="Thank you" aria-label="Text to sign input">
+  </div>
+  <div class="sgn" id="sg"></div>
+  <p style="text-align:center; font-size:0.85rem;">Translated into visual hand signs and fingerspelling tokens.</p>
+  <button class="btn" onclick="play()">↻ Replay Animation</button>
+</section>
+
+<!-- DEDICATED EMERGENCY SOS MODULE -->
+<section class="scr" id="sos">
+  <div class="sosh">
+    <div style="font-size:2.2rem">⚠️</div>
+    <b style="font-size:1.4rem">Emergency SOS Center</b>
+    <p>Tap below to alert contacts & services instantly</p>
+  </div>
+
+  <button class="sosb" onclick="sosGo()">SOS<br><small style="font-size:0.85rem">Tap to Alert</small></button>
+  <p id="sosm" style="text-align:center; font-weight:700;" aria-live="polite"></p>
+
+  <div id="sosl"></div>
+
+  <div class="row" id="gps" onclick="getLoc()">
+    📍 <span>Share GPS Coordinates<small id="gtxt">Tap to query GPS location</small></span>
+  </div>
+  
+  <h2>Emergency Hotline Dialers</h2>
+  <a class="row" href="tel:108" target="_top">🚑 <span>Call Medical Services<small>Dial 108 (Ambulance)</small></span></a>
+  <a class="row" href="tel:100" target="_top">🚓 <span>Call Police Emergency<small>Dial 100</small></span></a>
+</section>
+
+<!-- MEDICAL & SYMPTOMS -->
+<section class="scr" id="med">
+  <div class="top">
+    <button class="back" onclick="go('home')" aria-label="Back">‹</button>
+    <b>Medical & Symptom Phrases</b>
+  </div>
+  <div class="tiles" id="mg"></div>
+  <h2>Common Emergency Statements</h2>
+  <div id="mp"></div>
+</section>
+
+<!-- HISTORY -->
+<section class="scr" id="hist">
+  <h1>Activity & Speech History</h1>
+  <p>Tap any previous item to speak it again out loud.</p>
+  <div id="hl" style="margin-top:12px;"></div>
+</section>
+
+<!-- DEDICATED CAREGIVER HUB & LIVE UPDATES -->
+<section class="scr" id="care">
+  <div class="top">
+    <button class="back" onclick="go('home')" aria-label="Back">‹</button>
+    <b>Caregiver Hub & Radar</b>
+  </div>
+  <p>NIVARA monitors routine milestones and flags missing key actions without causing unnecessary panic.</p>
+
+  <div class="set">
+    <span>Scenario Data Mode</span>
+    <select id="scen" onchange="todayTaps.clear();care()">
+      <option value="quiet">Demo: Quiet Day (Missing Routine)</option>
+      <option value="normal">Demo: Normal Active Day</option>
+      <option value="live">My Real Recorded Data</option>
+    </select>
+  </div>
+
+  <div class="set" id="hourWrap">
+    <span>Simulated Time Check</span>
+    <select id="hour" onchange="care()">
+      <option value="9">09:00 AM</option>
+      <option value="11" selected>11:00 AM</option>
+      <option value="14">02:00 PM</option>
+    </select>
+  </div>
+
+  <div id="co"></div>
+
+  <h2>Live User Activity Stream</h2>
+  <div class="box" id="careFeed">
+    <p>No recent activity logged yet today.</p>
+  </div>
+</section>
+
+<!-- SETTINGS & DIAGNOSTICS -->
+<section class="scr" id="set">
+  <h1>Settings & Diagnostics</h1>
+
+  <div class="set">
+    <span>User Name</span>
+    <input id="nm" placeholder="Name" style="width:140px" oninput="sv('nm',this.value);setName()">
+  </div>
+
+  <div class="set">
+    <span>System Language</span>
+    <select id="lang">
+      <option value="en-IN">English (India)</option>
+      <option value="te-IN">Telugu (India)</option>
+      <option value="hi-IN">Hindi (India)</option>
+    </select>
+  </div>
+
+  <div class="set">
+    <span>Text Display Size</span>
+    <select id="tsz" onchange="document.documentElement.style.fontSize=this.value">
+      <option value="16px">Small (16px)</option>
+      <option value="18px" selected>Medium (18px)</option>
+      <option value="22px">Large (22px)</option>
+    </select>
+  </div>
+
+  <div class="set">
+    <span>Speech Output Rate</span>
+    <select id="rate">
+      <option value=".7">Slow</option>
+      <option value=".9" selected>Normal</option>
+      <option value="1.15">Fast</option>
+    </select>
+  </div>
+
+  <div class="set">
+    <span>Vibration Feedback</span>
+    <input type="checkbox" id="vib" checked style="width:22px; height:22px">
+  </div>
+
+  <div class="set">
+    <span>Screen Flash Alerts</span>
+    <input type="checkbox" id="fl" checked style="width:22px; height:22px">
+  </div>
+
+  <h2>Emergency Contacts</h2>
+  <div id="fam2"></div>
+  <div class="send">
+    <input id="fn" placeholder="Contact Name" aria-label="Contact Name" style="max-width:38%">
+    <input id="fp" type="tel" placeholder="Phone Number" aria-label="Phone Number">
+    <button onclick="addF()" aria-label="Add Contact">+</button>
+  </div>
+
+  <h2>Custom Quick Phrases</h2>
+  <div id="cpl"></div>
+  <div class="send">
+    <input id="cpi" placeholder="e.g. I need rest" aria-label="New Phrase">
+    <button onclick="addP()" aria-label="Add Phrase">+</button>
+  </div>
+
+  <h2>Medicine Reminders</h2>
+  <div id="reml"></div>
+  <div class="send">
+    <input id="rt" type="time" aria-label="Time" style="max-width:34%">
+    <input id="rl" placeholder="Medicine Label" aria-label="Label">
+    <button onclick="addR()" aria-label="Add Reminder">+</button>
+  </div>
+
+  <h2>Hardware & Browser Diagnostics</h2>
+  <button class="btn sec" onclick="diag()">Run Environment Diagnostics</button>
+  <div id="dg" class="box" style="display:none"></div>
+
+  <button class="btn sec" style="margin-top:10px;" onclick="speak('Hello, this is NIVARA accessibility platform')">🔊 Test Speech Output</button>
+</section>
+
+<!-- MEDICINE ALARM POPUP BANNER -->
+<div id="remb" role="alert" style="display:none; position:fixed; top:0; left:0; right:0; z-index:999; background:var(--org); color:#000; padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px; text-align:center">
+  <b id="remt">Medicine Reminder</b><br>
+  <button class="chip" onclick="remDone()" style="margin-top:6px; color:#000; background:#fff;">Acknowledge & Done ✓</button>
+</div>
+
+<!-- DEMO SCENARIO WALKTHROUGH -->
+<section class="scr" id="demo">
+  <div class="top">
+    <button class="back" onclick="go('home')" aria-label="Back">‹</button>
+    <b>Real Life Scenario</b>
+  </div>
+  <div class="box">
+    <b>Scenario A: A Normal Active Morning</b>
+    <p>User greets caregiver, requests water, confirms breakfast and morning medicine. Routine stays normal.</p>
+  </div>
+  <div class="box al">
+    <b>Scenario B: Unresponsive / Quiet Morning</b>
+    <p>No greeting, no water, and no medicine confirmation by 11:00 AM. NIVARA does not panic with loud false alarms. Instead, it alerts the caregiver hub that 3 routine steps are missing so someone can check on them.</p>
+  </div>
+  <button class="btn" onclick="$('scen').value='quiet'; go('care')">View Caregiver Alert Screen</button>
+</section>
+
+<!-- BOTTOM NAVIGATION BAR -->
+<nav id="nav">
+  <button data-g="home" onclick="go('home')"><span>🏠</span>Home</button>
+  <button data-g="hist" onclick="go('hist')"><span>🕒</span>History</button>
+  <button data-g="care" onclick="go('care')"><span>🩺</span>Caregiver</button>
+  <button data-g="set" onclick="go('set')"><span>⚙️</span>Settings</button>
+</nav>
+
+<script>
+// Helper Selectors & Storage Standard
+const $ = i => document.getElementById(i);
+const sg = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch(e) { return d; } };
+const sv = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+
+// Application State
+const hist = sg("hist", []);
+const msgs = sg("msgs", [["o", "Hello! How can I assist you today?"]]);
+const todayTaps = new Set();
+const LOG = sg("log", []);
+
+function logEv(k, details) {
+  if (!k) return;
+  const item = { t: Date.now(), k, label: details || k };
+  LOG.push(item);
+  sv("log", LOG.slice(-600));
+}
+
+const KEY = {
+  "Water": "water",
+  "Medicine": "medicine",
+  "I need my medicine": "medicine",
+  "Food": "breakfast",
+  "Hello": "greeting",
+  "Good morning": "greeting"
+};
+
+// Screen Router
+function go(id) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.toggle('on', s.id === id));
+  $('nav').classList.toggle('on', ['home', 'hist', 'care', 'set'].includes(id));
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.g === id));
+  
+  if (id === 'convo') drawM();
+  if (id === 'hist') drawH();
+  if (id === 'care') care();
+  if (id === 't2s') play();
+  if (id === 'sos') sosInit();
+  if (id === 'set') { drawF(); drawR(); drawQ(); }
+  window.scrollTo(0, 0);
+}
+
+// Text to Speech
+let V = [];
+const lv = () => { try { V = speechSynthesis.getVoices(); } catch(e) {} };
+lv();
+try { speechSynthesis.onvoiceschanged = lv; } catch(e) {}
+
+function speak(t) {
+  if (!t || t === '—') return;
+  hist.unshift(t);
+  sv('hist', hist.slice(0, 50));
+  
+  const mappedKey = KEY[t] || 'activity';
+  logEv(mappedKey, t);
+  todayTaps.add(mappedKey);
+
+  if (!('speechSynthesis' in window)) return;
+  const L = $('lang').value;
+  const u = new SpeechSynthesisUtterance(t);
+  lv();
+  
+  const v = V.find(x => x.lang.replace('_', '-') === L) || 
+            V.find(x => x.lang.startsWith(L.slice(0, 2))) || 
+            V.find(x => x.lang.startsWith('en'));
+            
+  if (v) { u.voice = v; u.lang = v.lang; }
+  u.rate = +$('rate').value;
+  speechSynthesis.cancel();
+  setTimeout(() => {
+    speechSynthesis.resume();
+    speechSynthesis.speak(u);
+  }, 60);
+}
+
+// Quick Phrases System
+const QP = ["Hello", "Thank you", "Need Help", "Water", "Food", "Medicine"];
+let CP = sg('cp', []);
+
+function drawQ() {
+  $('quick').innerHTML = [...QP, ...CP].map(p => `<button class="chip">${esc(p)}</button>`).join('');
+  $('cpl').innerHTML = CP.length ? CP.map((p, i) => 
+    `<div class="row">${esc(p)}<button class="chip" style="margin-left:auto" onclick="CP.splice(${i},1);sv('cp',CP);drawQ()">Remove</button></div>`
+  ).join('') : '<p style="font-size:0.85rem">Your custom added phrases will appear here.</p>';
+}
+
+function addP() {
+  const v = $('cpi').value.trim();
+  if (!v) return;
+  CP.push(v);
+  sv('cp', CP);
+  $('cpi').value = '';
+  drawQ();
+}
+
+$('quick').onclick = e => {
+  if (e.target.classList.contains('chip')) {
+    speak(e.target.textContent);
+    e.target.style.background = 'var(--pri)';
+    e.target.style.color = '#fff';
+    setTimeout(() => {
+      e.target.style.background = '';
+      e.target.style.color = '';
+    }, 400);
+  }
+};
+
+// Sign Detection Simulator
+$('signs').innerHTML = ["Water", "Need Help", "Food", "Medicine", "Thank you"].map(p => `<button class="chip">${p}</button>`).join('');
+$('signs').onclick = e => {
+  if (e.target.classList.contains('chip')) {
+    $('stxt').textContent = e.target.textContent;
+    speak(e.target.textContent);
+  }
+};
+
+async function cam() {
+  try {
+    let s;
+    try {
+      s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+    } catch(e) {
+      s = await navigator.mediaDevices.getUserMedia({ video: true });
+    }
+    $('cam').srcObject = s;
+    $('live').textContent = '● Live';
+    $('live').style.background = 'var(--grn)';
+  } catch(e) {
+    $('camNote').textContent = 'Camera permission restricted or unavailable: ' + (e.name || 'Error');
+  }
+}
+
+// Voice to Text (SpeechRecognition)
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec, on = false, ft = '';
+
+function stopRec() {
+  on = false;
+  try { rec && rec.stop(); } catch(e) {}
+  $('mic').classList.remove('go');
+  $('vbtn').textContent = 'Start Listening';
+  $('vst').textContent = 'Tap to Start';
+}
+
+function toggleRec() {
+  if (!SR) {
+    $('vnote').textContent = 'Web Speech Recognition is not supported by this browser. Try Chrome.';
+    return;
+  }
+  if (on) {
+    stopRec();
+    return;
+  }
+  rec = new SR();
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.lang = $('lang').value;
+  ft = '';
+
+  rec.onresult = e => {
+    let interim = '';
+    for (let k = e.resultIndex; k < e.results.length; k++) {
+      const r = e.results[k];
+      if (r.isFinal) ft += r[0].transcript + ' ';
+      else interim += r[0].transcript;
+    }
+    $('vtxt').textContent = ft + interim;
+  };
+
+  rec.onend = () => {
+    if (on) try { rec.start(); } catch(e) {}
+  };
+
+  rec.onerror = e => {
+    $('vnote').textContent = 'Microphone error: ' + e.error;
+  };
+
+  try {
+    rec.start();
+    on = true;
+    $('mic').classList.add('go');
+    $('vbtn').textContent = 'Stop Listening';
+    $('vst').textContent = 'Listening...';
+  } catch(e) {}
+}
+
+function saveV() {
+  const t = $('vtxt').textContent.trim();
+  if (t) {
+    msgs.push(["o", t]);
+    sv('msgs', msgs.slice(-100));
+    logEv('speech_input', t);
+    go('convo');
+  }
+}
+
+// Conversation Room
+const tm = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+function drawM() {
+  $('msgs').innerHTML = msgs.map(m => 
+    `<div class="m ${m[0]}">${m[1].replace(/</g, '&lt;')}<small>${m[2] || tm()}</small></div>`
+  ).join('');
+  const mBox = $('msgs');
+  mBox.scrollTop = mBox.scrollHeight;
+}
+
+function sendM() {
+  const t = $('mi').value.trim();
+  if (!t) return;
+  msgs.push(["me", t]);
+  sv('msgs', msgs.slice(-100));
+  $('mi').value = '';
+  speak(t);
+  drawM();
+}
+
+$('mi').onkeydown = e => { if (e.key === 'Enter') sendM(); };
+
+function drawH() {
+  $('hl').innerHTML = hist.length ? hist.map(h => 
+    `<button class="row" onclick="speak(this.textContent)">${h.replace(/</g, '&lt;')}</button>`
+  ).join('') : '<p>No speech or phrase history yet.</p>';
+}
+
+// Text to Sign Visual Translator
+const EM = { hello: "👋", thank: "🙏", you: "👉", help: "🆘", water: "💧", food: "🍽️", medicine: "💊", yes: "👍", no: "👎", pain: "🤕" };
+let pt;
+
+function play() {
+  const w = ($('ti').value.trim().split(/\s+/)).filter(Boolean);
+  $('sg').innerHTML = w.map(x => {
+    const k = x.toLowerCase().replace(/\W/g, '');
+    return `<div><span>${EM[k] || [...k].map(c => c.toUpperCase()).join(' ')}</span><small>${x}</small></div>`;
+  }).join('');
+
+  const el = [...$('sg').children];
+  clearTimeout(pt);
+  let i = 0;
+  (function n() {
+    el.forEach((e, j) => e.className = j === i ? 'hi' : '');
+    if (++i <= el.length) pt = setTimeout(n, 850);
+    else el.forEach(e => e.className = '');
+  })();
+}
+
+$('ti').oninput = play;
+
+// Medical Statements
+const MG = [["🧍", "Pain"], ["🌡️", "Fever"], ["🌼", "Allergy"], ["💊", "Medicine"], ["➕", "Emergency"], ["📄", "Past Condition"]];
+$('mg').innerHTML = MG.map(m => `<button class="tile" style="min-height:90px"><span style="font-size:2rem">${m[0]}</span><br>${m[1]}</button>`).join('');
+$('mg').onclick = e => {
+  const b = e.target.closest('button');
+  if (b) speak(b.textContent.trim());
+};
+
+$('mp').innerHTML = [
+  "I have severe chest pain", 
+  "I am feeling dizzy", 
+  "I need an immediate doctor", 
+  "I need my prescription medicine"
+].map(p => `<button class="row">${p}<em>›</em></button>`).join('');
+
+$('mp').onclick = e => {
+  const b = e.target.closest('button');
+  if (b) speak(b.firstChild.textContent);
+};
+
+// Emergency SOS Handling
+const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let FAM = sg('fam', []);
+let gps = '';
+let sosT;
+
+function drawF() {
+  $('fam2').innerHTML = FAM.length ? FAM.map((f, i) => 
+    `<div class="row">👪<span>${esc(f.n)}<small>${esc(f.p)}</small></span><button class="chip" style="margin-left:auto" onclick="delF(${i})">Remove</button></div>`
+  ).join('') : '<p style="font-size:0.85rem">No emergency contacts added yet.</p>';
+}
+
+function addF() {
+  const n = $('fn').value.trim();
+  const p = $('fp').value.trim();
+  if (!n || p.replace(/\D/g, '').length < 6) {
+    alert('Please enter a valid name and contact phone number.');
+    return;
+  }
+  FAM.push({ n, p });
+  sv('fam', FAM);
+  $('fn').value = $('fp').value = '';
+  drawF();
+}
+
+function delF(i) {
+  FAM.splice(i, 1);
+  sv('fam', FAM);
+  drawF();
+}
+
+const num = f => f.p.replace(/[^\d+]/g, '');
+
+function famLinks() {
+  const m = encodeURIComponent('SOS Alert from NIVARA: I need urgent assistance.' + (gps ? ' My GPS Location: ' + gps : ''));
+  if (!FAM.length) {
+    return '<p>No contacts saved. Please configure contacts in Settings.</p><button class="btn sec" onclick="go(\'set\')">Open Settings</button>';
+  }
+  return FAM.map(f => 
+    `<div class="row">👪<span>${esc(f.n)}<small>${esc(f.p)}</small></span>
+      <a class="chip" style="margin-left:auto; text-decoration:none" href="tel:${num(f)}" target="_top">📞 Call</a>
+      <a class="chip" style="text-decoration:none" href="sms:${num(f)}?body=${m}" target="_top">✉️ SMS</a>
+    </div>`
+  ).join('');
+}
+
+function sosInit() {
+  $('sosl').innerHTML = famLinks();
+}
+
+function getLoc() {
+  if (!navigator.geolocation) {
+    $('gtxt').textContent = 'Geolocation not supported';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(p => {
+    gps = `https://maps.google.com/?q=${p.coords.latitude},${p.coords.longitude}`;
+    $('gtxt').textContent = `GPS: ${p.coords.latitude.toFixed(4)}, ${p.coords.longitude.toFixed(4)}`;
+    sosInit();
+  }, e => {
+    $('gtxt').textContent = 'GPS blocked: ' + e.message;
+  }, { timeout: 6000 });
+}
+
+function sosGo() {
+  clearInterval(sosT);
+  if ($('vib').checked && navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 400]);
+  if ($('fl').checked) {
+    document.body.classList.remove('flash');
+    void document.body.offsetWidth;
+    document.body.classList.add('flash');
+  }
+  getLoc();
+  logEv('sos_triggered', 'Emergency SOS Activated');
+
+  if (!FAM.length) {
+    $('sosm').textContent = 'No family contact saved. Use direct dialers below or add contacts in Settings.';
+    return;
+  }
+
+  let count = 3;
+  const f = FAM[0];
+  $('sosm').innerHTML = `Dialing ${esc(f.n)} in 3s... <button class="chip" onclick="clearInterval(sosT);$('sosm').textContent='SOS Cancelled'">Cancel</button>`;
+  
+  sosT = setInterval(() => {
+    count--;
+    if (count > 0) {
+      $('sosm').innerHTML = `Dialing ${esc(f.n)} in ${count}s... <button class="chip" onclick="clearInterval(sosT);$('sosm').textContent='SOS Cancelled'">Cancel</button>`;
+      return;
+    }
+    clearInterval(sosT);
+    $('sosm').textContent = `Initiating call to ${f.n}...`;
+    try { window.top.location.href = 'tel:' + num(f); } catch(e) { location.href = 'tel:' + num(f); }
+  }, 1000);
+}
+
+// Diagnostics Diagnostic Suite
+const inFrame = (() => { try { return window.self !== window.top; } catch(e) { return true; } })();
+
+if (inFrame) {
+  $('warn').innerHTML = '<div class="box al"><b>Preview Sandbox Notice</b><p>Hardware media features (Camera, Microphone, Geolocation) may be restricted inside nested iframe previews. Download and launch directly in Chrome for full functionality.</p></div>';
+}
+
+async function diag() {
+  const L = [];
+  const ok = (n, v, h) => L.push(`<div class="set"><span>${n}</span><span class="${v ? 'dn' : 'ms'}">${v ? 'OK' : (h || 'Unavailable')}</span></div>`);
+  
+  ok('Secure HTTPS Context', window.isSecureContext, 'Requires HTTPS');
+  ok('Standalone Window', !inFrame, 'Nested in iframe');
+  lv();
+  ok('Speech Synthesis Engine (' + V.length + ' voices)', ('speechSynthesis' in window) && V.length > 0, 'No voices detected');
+  ok('Web Speech Recognition', !!SR, 'Unsupported browser');
+
+  let c = false;
+  try { const st = await navigator.mediaDevices.getUserMedia({ video: true }); st.getTracks().forEach(t => t.stop()); c = true; } catch(e) {}
+  ok('Camera Access', c, 'Blocked / Denied');
+
+  let m = false;
+  try { const st = await navigator.mediaDevices.getUserMedia({ audio: true }); st.getTracks().forEach(t => t.stop()); m = true; } catch(e) {}
+  ok('Microphone Access', m, 'Blocked / Denied');
+
+  ok('Geolocation GPS', !!navigator.geolocation, 'Unavailable');
+  
+  $('dg').style.display = 'block';
+  $('dg').innerHTML = L.join('');
+}
+
+// Caregiver Pattern Engine & Analytics Hub
+const SIG = [
+  ["greeting", "Greeting / Check-in", "08:00", 8],
+  ["water", "Hydration Request", "08:15", 8.5],
+  ["breakfast", "Meal / Breakfast", "08:45", 9],
+  ["medicine", "Medicine Confirmation", "09:00", 9.5],
+  ["activity", "General Activity", "10:30", 10.5]
+];
+
+function hs(k) {
+  return [...Array(14)].map((_, i) => {
+    const d = {};
+    SIG.forEach(s => d[s[0]] = 1);
+    if (i === 1) d.water = 0;
+    if (k === 'quiet') {
+      if (i >= 9) d.water = 0;
+      if (i >= 10) d.activity = 0;
+      if (i >= 11) { d.medicine = 0; d.greeting = 0; }
+    }
+    return d;
+  });
+}
+
+const sc = d => SIG.filter(s => d[s[0]]).length / 5;
+
+function liveDays() {
+  const m = {}, T = new Date().toDateString();
+  LOG.forEach(e => {
+    const d = new Date(e.t).toDateString();
+    (m[d] = m[d] || {})[e.k] = 1;
+  });
+  const past = Object.keys(m).filter(d => d !== T).sort((a, b) => new Date(a) - new Date(b)).slice(-14).map(d => {
+    const o = {};
+    SIG.forEach(s => o[s[0]] = m[d][s[0]] ? 1 : 0);
+    return o;
+  });
+  const t = {};
+  SIG.forEach(s => t[s[0]] = (m[T] || {})[s[0]] ? 1 : 0);
+  return { past, t };
+}
+
+function care() {
+  const k = $('scen').value;
+  let hr = +$('hour').value;
+  let h, t = {}, learn = '';
+  
+  $('hourWrap').style.display = k === 'live' ? 'none' : 'flex';
+
+  if (k === 'live') {
+    const n = new Date();
+    const L = liveDays();
+    hr = n.getHours() + n.getMinutes() / 60;
+    h = L.past;
+    t = L.t;
+    if (h.length < 3) {
+      learn = `Learning Mode Active: ${h.length} of 3 baseline days collected. Use NIVARA daily to build a routine pattern.`;
+    }
+  } else {
+    h = hs(k);
+    SIG.forEach(s => t[s[0]] = k === 'normal' ? 1 : 0);
+    todayTaps.forEach(x => t[x] = 1);
+  }
+
+  const due = SIG.filter(s => s[3] <= hr);
+  const ms = due.filter(s => !t[s[0]]);
+  const bs = h.slice(0, 7);
+  const b = bs.length ? bs.reduce((a, d) => a + sc(d), 0) / bs.length : 1;
+  const un = !learn && ms.length >= 2;
+  const sc2 = [...h.map(sc), due.length ? (due.length - ms.length) / due.length : 1];
+
+  let html = learn 
+    ? `<div class="box"><b>🧠 Baseline Learning Status</b><p>${esc(learn)}</p></div>`
+    : un 
+      ? `<div class="box al">
+          <b>⚠️️ Routine Deviation Alert: Check on User</b>
+          <p>${ms.length} expected activity milestones missing by ${Math.floor(hr)}:00. This is an informative routine check alert.</p>
+          ${FAM.length ? `<a class="btn" style="margin-top:10px" href="tel:${num(FAM[0])}" target="_top">📞 Contact Care Recipient / Family</a>` : ''}
+        </div>`
+      : `<div class="box"><b>✅ Normal Routine Detected</b><p>All expected morning activities completed as scheduled.</p></div>`;
+
+  html += `<div class="box"><b>Milestone Progress Today</b>`;
+  html += due.map(s => 
+    `<div class="set"><span>${s[1]} <small>(~${s[2]})</small></span><span class="${t[s[0]] ? 'dn' : 'ms'}">${t[s[0]] ? 'Completed ✓' : 'Missing ✗'}</span></div>`
+  ).join('');
+  html += `</div>`;
+
+  html += `<div class="box"><b>14-Day Trajectory Trace</b>
+    <div class="bars">${sc2.map((v, i) => `<div class="${i === sc2.length - 1 ? 'now' : v < b - 0.15 ? 'low' : ''}" style="height:${Math.max(8, v * 100)}%"></div>`).join('')}</div>
+    <p style="font-size:0.8rem; margin-top:8px;">Height reflects daily routine completion rate. Red bar is today.</p>
+  </div>`;
+
+  $('co').innerHTML = html;
+
+  // Render Live Feed
+  const recentLogs = LOG.slice(-6).reverse();
+  if (recentLogs.length) {
+    $('careFeed').innerHTML = recentLogs.map(l => `
+      <div class="feed-item">
+        <b>${esc(l.label)}</b>
+        <small>${new Date(l.t).toLocaleTimeString()}</small>
+      </div>
+    `).join('');
+  } else {
+    $('careFeed').innerHTML = '<p>No activities recorded today yet.</p>';
+  }
+}
+
+// User Profile & Scheduled Reminders
+function setName() {
+  $('hi').textContent = 'Hello, ' + (sg('nm', '') || 'User') + '!';
+}
+
+$('nm').value = sg('nm', '');
+setName();
+
+let REM = sg('rem', []);
+const fired = {};
+
+function drawR() {
+  $('reml').innerHTML = REM.length ? REM.map((r, i) => 
+    `<div class="row">⏰ <span>${esc(r.l)}<small>Scheduled: ${r.tm} Daily</small></span><button class="chip" style="margin-left:auto" onclick="REM.splice(${i},1);sv('rem',REM);drawR()">Remove</button></div>`
+  ).join('') : '<p style="font-size:0.85rem">No reminders set.</p>';
+}
+
+function addR() {
+  const tm = $('rt').value;
+  const l = $('rl').value.trim() || 'Medicine';
+  if (!tm) return;
+  REM.push({ tm, l });
+  sv('rem', REM);
+  $('rl').value = '';
+  try { Notification.requestPermission(); } catch(e) {}
+  drawR();
+}
+
+function remind(r) {
+  $('remb').style.display = 'block';
+  $('remt').textContent = 'Time for Medication: ' + r.l;
+  speak('Medication reminder: time for ' + r.l);
+  if (navigator.vibrate) navigator.vibrate([400, 200, 400]);
+  try { new Notification('NIVARA Medication Alert', { body: 'Time for ' + r.l }); } catch(e) {}
+}
+
+function remDone() {
+  logEv('medicine', 'Medicine Taken');
+  todayTaps.add('medicine');
+  $('remb').style.display = 'none';
+}
+
+setInterval(() => {
+  const d = new Date();
+  const hm = d.toTimeString().slice(0, 5);
+  REM.forEach(r => {
+    const k = d.toDateString() + hm + r.l;
+    if (r.tm === hm && !fired[k]) {
+      fired[k] = 1;
+      remind(r);
+    }
+  });
+}, 12000);
+
+// Initialize Default States
+drawQ();
+drawR();
+
+document.addEventListener('click', () => {
+  try {
+    speechSynthesis.getVoices();
+    speechSynthesis.resume();
+  } catch(e) {}
+}, { once: true });
+</script>
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+</script>
+</body>
+</html>
